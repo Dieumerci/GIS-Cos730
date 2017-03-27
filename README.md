@@ -7,17 +7,9 @@ The UP campus  Zsweihander-GIS creates a dataset of routing information, buildin
 latitude and longitude data that is gathered to generated a spatial 2d representation of different features found on the UP campus.
 The Zsweihander-GIS is equipped with a series of functionality such as displaying information in real-time, which will assist in handling and maintaining data for the redisplaying of previous coordinates as well as, updating and adding new coordinates.
 :::
-
-## Implementation of Zweihander GIS :mobile:
-
 ## Team Zweihander GIS :red_circle:
-
-
-
 ::: warning
-
 Team page for the third assignment of COS 730, team Zweihander GIS.
-
 :::
 
 ### Team Github Repository
