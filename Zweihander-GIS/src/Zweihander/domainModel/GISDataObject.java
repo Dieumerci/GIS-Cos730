@@ -10,6 +10,7 @@ import java.util.List;
 public class GISDataObject 
 {
    private double[] GPSCoord = new double[2];
+   private String objectName;
    private List<String> GPSTags;
    
    public GISDataObject()
@@ -21,10 +22,11 @@ public class GISDataObject
            GPSCoord[i] = 0.0;
        }
    }
-   public GISDataObject(double latitude,double longitude,List<String> tags)
+   public GISDataObject(double latitude,double longitude, String mObjectName,List<String> tags)
    {
        GPSCoord[0] = latitude;
        GPSCoord[1] = longitude;
+       objectName = mObjectName ;
        GPSTags = tags;
    }
 
@@ -65,5 +67,19 @@ public class GISDataObject
     public void addTag( String tag) 
     {
         this.GPSTags.add(tag);
+    }
+
+    /**
+     * @return the objectName
+     */
+    public String getObjectName() {
+        return objectName;
+    }
+
+    /**
+     * @param objectName the objectName to set
+     */
+    public void setObjectName(String objectName) {
+        this.objectName = objectName;
     }
 }

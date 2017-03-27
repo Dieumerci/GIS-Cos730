@@ -14,6 +14,10 @@ public class GISResponse
     {
         mGISDataObject = null;
     }
+    public GISResponse(GISDataObject sGISDataObject)
+    {
+        mGISDataObject = sGISDataObject;
+    }
     /**
      * @return the mGISDataObject
      */
