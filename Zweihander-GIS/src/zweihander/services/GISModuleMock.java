@@ -25,15 +25,16 @@ public class GISModuleMock {
         dataStore.addGISDataObject(locationOne);
         return new GISResponse(locationOne);
     }
-    public GISResponse getGISDataObject(GISRequest gisRequest)throws GISObjectNotFound
+    public GISResponse getGISDataObject(GISRequest gisRequest,String nameOfLocation)throws GISObjectNotFound
     {
         GISDataObject mGISObject;
-        if(dataStore.getGISDataObject(gisRequest)== null)
+       
+        if(dataStore.getGISDataObject(gisRequest,nameOfLocation)== null){
             throw new GISObjectNotFound("GIS object not found");
+        }
         else
         {
-            mGISObject = dataStore.getGISDataObject(gisRequest);
-            System.out.println(mGISObject.getObjectName());
+            mGISObject = dataStore.getGISDataObject(gisRequest,nameOfLocation);
         }
         return new GISResponse(mGISObject);
     }

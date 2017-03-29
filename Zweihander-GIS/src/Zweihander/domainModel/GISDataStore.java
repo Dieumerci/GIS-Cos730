@@ -24,22 +24,25 @@ public class GISDataStore
     {
        addGISDataObject(mGisDataObject);
     }
-   
     public void addGISDataObject(GISDataObject mGisDataObject)
     {
        gisDataObjects.add(mGisDataObject);
+       System.out.println(mGisDataObject.getObjectName() + "was added to the database");
     }
-    public GISDataObject getGISDataObject(GISRequest mGISRequest)
+    public GISDataObject getGISDataObject(GISRequest mGISRequest,String locationName)
     {
-       //Search for the GISDataObject from the list
+       String buildingName = "";
+       
        for(int i=0;i<gisDataObjects.size();i++)
        {
-           if(gisDataObjects.get(i) == mGISRequest.getmGISDataObject())
+          
+           buildingName = gisDataObjects.get(i).getObjectName();
+          
+           if( buildingName == "IT Building")
            {
-               return gisDataObjects.get(i);
+              return gisDataObjects.get(i);
            }
        }
-       //GISDataObject not found
        return null;
     }
     public GISDataObject modifyGISData(GISDataObject mGisDataObject)
@@ -50,21 +53,14 @@ public class GISDataStore
         {
             if(gisDataObjects.get(i) == mGisDataObject )
             {
-                //modify GPS coordinates
-                
                 mGPSCoord[0] = 38.898556;
                 mGPSCoord[1] = -77.037852;
-                
                 gisDataObjects.get(i).setGPSCoord(mGPSCoord);
-                
                 gisDataObjects.get(i).addTag("Modified tag");
-                
-                
-                //Return modified object
                 return gisDataObjects.get(i);
             }
         }
-        //GISObject to modify not found
+        
         return null;
     }
 }
