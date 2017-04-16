@@ -50,11 +50,16 @@ public class Main {
 	            .getConnection("jdbc:postgresql://localhost:5432/postgis",
 	            "postgres", "admin");
 	         System.out.println("Opened database successfully");
-
+	         stmt = c.createStatement();
+	         String sql = "CREATE TABLE BUILD " +
+                     "(ID INT PRIMARY KEY     NOT NULL," +
+                     " NAME           TEXT    NOT NULL, " +
+                     " POLYGONS       TEXT     NOT NULL)";
+	         stmt.executeUpdate(sql);
 	         stmt = c.createStatement();
 	         for (int i = 0; i < buildingNames.size(); i++)
 			 {
-	        	 String sql = "INSERT INTO BUILD (ID,NAME,POLYGONS) "
+	        	 sql = "INSERT INTO BUILD (ID,NAME,POLYGONS) "
 		                 + "VALUES (" + i + ", '" + buildingNames.get(i) + "','" + polygons.get(i) + "' );";
 		         stmt.executeUpdate(sql);
 			 }
@@ -112,17 +117,17 @@ public class Main {
 	            "postgres", "admin");
 	         System.out.println("Opened database successfully");
 	         stmt = c.createStatement();
-//	         String sql = "CREATE TABLE BUILDING_ENTRANCES " +
-//                     "(ID INT PRIMARY KEY     NOT NULL," +
-//                     " NAME           TEXT    NOT NULL, " +
-//                     " LATITUDE       TEXT     NOT NULL, " +
-//                     " LONGITUDE      TEXT)";
-//	         stmt.executeUpdate(sql);
+	         String sql = "CREATE TABLE BUILDING_ENTRANCES " +
+                     "(ID INT PRIMARY KEY     NOT NULL," +
+                     " NAME           TEXT    NOT NULL, " +
+                     " LATITUDE       TEXT     NOT NULL, " +
+                     " LONGITUDE      TEXT)";
+	         stmt.executeUpdate(sql);
 
 	         
 	         for (int i = 0; i < entranceNames.size(); i++)
 			 {
-	        	 String sql = "INSERT INTO BUILDING_ENTRANCES (ID,NAME,LATITUDE,LONGITUDE) "
+	        	 sql = "INSERT INTO BUILDING_ENTRANCES (ID,NAME,LATITUDE,LONGITUDE) "
 		                 + "VALUES (" + i + ", '" + entranceNames.get(i) + "','" + latitude.get(i) + "','" + longitude.get(i) +"');";
 		         stmt.executeUpdate(sql);
 			 }
@@ -174,14 +179,14 @@ public class Main {
 	            "postgres", "admin");
 	         System.out.println("Opened database successfully");
 	         stmt = c.createStatement();
-//	         String sql = "CREATE TABLE CAMPUS_BUILDINGS " +
-//                     "(ID INT PRIMARY KEY     NOT NULL," +
-//                     " NAME           TEXT    NOT NULL, " +
-//                     " POLYGONS       TEXT     NOT NULL)";
-//	         stmt.executeUpdate(sql);
+	         String sql = "CREATE TABLE CAMPUS_BUILDINGS " +
+                     "(ID INT PRIMARY KEY     NOT NULL," +
+                     " NAME           TEXT    NOT NULL, " +
+                     " POLYGONS       TEXT     NOT NULL)";
+	         stmt.executeUpdate(sql);
 	         for (int i = 0; i < buildingNames.size(); i++)
 			 {
-	        	 String sql = "INSERT INTO CAMPUS_BUILDINGS (ID,NAME,POLYGONS) "
+	        	 sql = "INSERT INTO CAMPUS_BUILDINGS (ID,NAME,POLYGONS) "
 		                 + "VALUES (" + i + ", '" + buildingNames.get(i) + "','" + polygons.get(i) + "' );";
 		         stmt.executeUpdate(sql);
 			 }
@@ -214,18 +219,14 @@ public class Main {
 	      List<String> levels = new ArrayList<String>();
 	      try {
 			while ((nextLine = reader.readLine()) != null) {
-			     if (nextLine != null) {
-			        //Verifying the read data here
-			    	 
+			     if (nextLine != null) {			    	 
 			    	 String[] oneSeparatedLine = nextLine.toString().split("\"");
-			    	 String theRest = oneSeparatedLine.toString().substring(1, oneSeparatedLine.length - 1);
-			    	 String[] theRestArray = theRest.toString().split(",");
-			    	 //System.out.println(oneSeparatedLin);
-//			    	 buildingNames.add(oneSeparatedLine[7].replace(",", ""));
-//			    	 roomNames.add(oneSeparatedLine[6].replace(",", ""));
-//			    	 ids.add(oneSeparatedLine[5].replace(",", ""));
-//			    	 levels.add(oneSeparatedLine[8].replace(",", ""));
-//			    	 polygons.add(oneSeparatedLine[1]);
+			    	 String[] others = oneSeparatedLine[2].split(",");
+			    	 buildingNames.add(others[3]);
+			    	 roomNames.add(others[2]);
+			    	 ids.add(others[1]);
+			    	 levels.add(others[4]);
+			    	 polygons.add(oneSeparatedLine[1]);
 			     }
 			   }
 		} catch (IOException e) {
@@ -251,8 +252,74 @@ public class Main {
 	         stmt.executeUpdate(sql);
 	         for (int i = 0; i < buildingNames.size(); i++)
 			 {
-	        	 sql = "INSERT INTO CAMPUS_BUILDINGS (ID,ROOM_NAME,BUILDING_NAME,LEVEL,POLYGONS) "
-		                 + "VALUES (" + ids.get(i) + ",'" + roomNames.get(i) + "','" + buildingNames.get(i) + "', " + levels.get(i) + "'" + polygons.get(i) + "' );";
+	        	 sql = "INSERT INTO LECTURE_HALLS (ID,ROOM_NAME,BUILDING_NAME,LEVEL,POLYGONS) "
+		                 + "VALUES (" + ids.get(i) + ",'" + roomNames.get(i) + "','" + buildingNames.get(i) + "', " + levels.get(i) + ",'" + polygons.get(i) + "' );";
+		         stmt.executeUpdate(sql);
+			 }
+	         
+	         stmt.close();
+	         c.close();
+	       } catch ( Exception e ) {
+	         System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+	         System.exit(0);
+	       }
+	       System.out.println("Table created successfully");
+	}
+	
+	public static void createLectureHallsL3()
+	{
+		BufferedReader  reader = null;
+		try {
+			reader = new BufferedReader (new FileReader("db_csv/lecture_halls_l3.csv"));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	       
+		//Read CSV line by line and use the string array as you want
+	      String nextLine;
+	      List<String> buildingNames = new ArrayList<String>();
+	      List<String> roomNames = new ArrayList<String>();
+	      List<String> polygons = new ArrayList<String>();
+	      List<String> ids = new ArrayList<String>();
+	      List<String> levels = new ArrayList<String>();
+	      try {
+			while ((nextLine = reader.readLine()) != null) {
+			     if (nextLine != null) {			    	 
+			    	 String[] oneSeparatedLine = nextLine.toString().split("\"");
+			    	 String[] others = oneSeparatedLine[2].split(",");
+			    	 buildingNames.add(others[3]);
+			    	 roomNames.add(others[2]);
+			    	 ids.add(others[1]);
+			    	 levels.add(others[4]);
+			    	 polygons.add(oneSeparatedLine[1]);
+			     }
+			   }
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	      
+	      Connection c = null;
+	       Statement stmt = null;
+	       try {
+	         Class.forName("org.postgresql.Driver");
+	         c = DriverManager
+	            .getConnection("jdbc:postgresql://localhost:5432/postgis",
+	            "postgres", "admin");
+	         System.out.println("Opened database successfully");
+	         stmt = c.createStatement();
+	         String sql = "CREATE TABLE LECTURE_HALLS " +
+                     "(ID INT PRIMARY KEY     NOT NULL," +
+	         		   " ROOM_NAME           TEXT    NOT NULL, " +
+                     " BUILDING_NAME           TEXT    NOT NULL, " +
+	         		   " LEVEL           INT    NOT NULL, " +
+                     " POLYGONS       TEXT     NOT NULL)";
+	         stmt.executeUpdate(sql);
+	         for (int i = 0; i < buildingNames.size(); i++)
+			 {
+	        	 sql = "INSERT INTO LECTURE_HALLS (ID,ROOM_NAME,BUILDING_NAME,LEVEL,POLYGONS) "
+		                 + "VALUES (" + ids.get(i) + ",'" + roomNames.get(i) + "','" + buildingNames.get(i) + "', " + levels.get(i) + ",'" + polygons.get(i) + "' );";
 		         stmt.executeUpdate(sql);
 			 }
 	         
@@ -336,9 +403,80 @@ public class Main {
 	       }
 	       System.out.println("Table created successfully");
 	}
+	
+	public static void createLectureWalls()
+	{
+		BufferedReader  reader = null;
+		try {
+			reader = new BufferedReader (new FileReader("db_csv/lecture_walls.csv"));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	       
+		//Read CSV line by line and use the string array as you want
+	      String nextLine;
+	      List<String> buildingNames = new ArrayList<String>();
+	      List<String> roomNames = new ArrayList<String>();
+	      List<String> polygons = new ArrayList<String>();
+	      List<String> ids = new ArrayList<String>();
+	      List<String> levels = new ArrayList<String>();
+	      try {
+			while ((nextLine = reader.readLine()) != null) {
+			     if (nextLine != null) {			    	 
+			    	 String[] oneSeparatedLine = nextLine.toString().split("\"");
+			    	 String[] others = oneSeparatedLine[2].split(",");
+			    	 buildingNames.add(others[3]);
+			    	 roomNames.add(others[2]);
+			    	 ids.add(others[1]);
+			    	 levels.add(others[4]);
+			    	 polygons.add(oneSeparatedLine[1]);
+			     }
+			   }
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	      
+	      Connection c = null;
+	       Statement stmt = null;
+	       try {
+	         Class.forName("org.postgresql.Driver");
+	         c = DriverManager
+	            .getConnection("jdbc:postgresql://localhost:5432/postgis",
+	            "postgres", "admin");
+	         System.out.println("Opened database successfully");
+	         stmt = c.createStatement();
+	         String sql = "CREATE TABLE LECTURE_WALLS " +
+                     "(ID INT PRIMARY KEY     NOT NULL," +
+	         		   " ROOM_NAME           TEXT    NOT NULL, " +
+                     " BUILDING_NAME           TEXT    NOT NULL, " +
+	         		   " LEVEL           INT    NOT NULL, " +
+                     " POLYGONS       TEXT     NOT NULL)";
+	         stmt.executeUpdate(sql);
+	         for (int i = 0; i < buildingNames.size(); i++)
+			 {
+	        	 sql = "INSERT INTO LECTURE_WALLS (ID,ROOM_NAME,BUILDING_NAME,LEVEL,POLYGONS) "
+		                 + "VALUES (" + ids.get(i) + ",'" + roomNames.get(i) + "','" + buildingNames.get(i) + "', " + levels.get(i) + ",'" + polygons.get(i) + "' );";
+		         stmt.executeUpdate(sql);
+			 }
+	         
+	         stmt.close();
+	         c.close();
+	       } catch ( Exception e ) {
+	         System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+	         System.exit(0);
+	       }
+	       System.out.println("Table created successfully");
+	}
 
 	public static void main(String[] args) {
-		//createLectureHallsL2();
+		createBuild();
+		createBuildingEntrances();
+		createCampusBuildings();
+		createLectureHallsL2();
+		createLectureHallsL3();
+		createLectureWalls();
 		createStairs();
 	   }
 	
